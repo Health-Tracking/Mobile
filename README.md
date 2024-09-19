@@ -3,7 +3,7 @@
 ## 관련 링크
 [웹페이지 링크](https://mellifluous-frangollo-878d87.netlify.app/)
 
-[Mobile Repository](https://github.com/Health-Tracking/Mobile)
+[Web Repository](https://github.com/Health-Tracking/Web)
 
 ## 배경
 
