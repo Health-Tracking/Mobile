@@ -1,11 +1,54 @@
-# Sample Snack app
+# 환자 모니터링 시스템
 
-Open the `App.js` file to start writing some code. You can preview the changes directly on your phone or tablet by scanning the **QR code** or use the iOS or Android emulators. When you're done, click **Save** and share the link!
+## 관련 링크
+[웹페이지 링크](https://mellifluous-frangollo-878d87.netlify.app/)
 
-When you're ready to see everything that Expo provides (or if you want to use your own editor) you can **Download** your project and use it with [expo cli](https://docs.expo.dev/get-started/installation/#expo-cli)).
+[Web Repository](https://github.com/Health-Tracking/Web)
 
-All projects created in Snack are publicly available, so you can easily share the link to this project via link, or embed it on a web page with the `<>` button.
+## 배경
 
-If you're having problems, you can tweet to us [@expo](https://twitter.com/expo) or ask in our [forums](https://forums.expo.dev/c/expo-dev-tools/61) or [Discord](https://chat.expo.dev/).
+만성 질환자 및 중증 질환자에게 처방약을 정확히 복용하는 것은 매우 중요합니다. 약물 복용을 제대로 하지 않으면 치료 효과가 떨어지거나 부작용이 발생할 수 있습니다. 그러나 현재 주치의가 환자의 복약 상황을 실시간으로 확인할 방법이 없습니다. 
 
-Snack is Open Source. You can find the code on the [GitHub repo](https://github.com/expo/snack).
+또한, 의료 파업으로 인한 진료 및 수술 지연으로 적절한 시기에 치료받기 어려워지는 상황에서, 이로 인해 발생할 수 있는 문제를 예방하는 것이 본 프로젝트의 목표입니다.
+
+## 기대효과
+
+1. 정확한 시간에 약품 복용 가능
+2. 추가 환자 데이터 확보를 통한 정확한 진단 지원
+3. 의료 파업 및 의료 사각지대로 인한 문제 감소
+
+## 주요 기능
+
+### 1. 처방약 정보 확인
+- 환자는 처방받은 약의 정보, 복용 방법, 주의사항을 확인할 수 있습니다.
+
+### 2. 복약 알림 및 기록
+- 앱에서 알림 설정을 통해 정해진 시간에 약물 복용을 상기시킵니다.
+- 복용 후 기록을 남겨 담당 의사가 확인할 수 있도록 합니다.
+
+### 3. 건강 지표 모니터링
+다음과 같은 건강 지표를 자택에서 측정하고 기록할 수 있습니다:
+- 산소포화도
+- 혈압
+- 혈당
+
+이는 주로 다음 환자군을 대상으로 합니다:
+- 중증 질환자
+- 고혈압/저혈압 환자
+- 당뇨 환자
+
+### 4. 데이터 시각화
+- 측정된 건강 지표들을 그래프로 표현하여 트렌드를 쉽게 확인할 수 있습니다.
+
+## 사용 기술
+
+[여기에 프로젝트에서 사용된 주요 기술 스택을 나열하세요]
+
+## 설치 및 사용 방법
+
+[앱 설치 방법 및 기본적인 사용 가이드를 제공하세요]
+
+## 연락처
+[백은호][bhh0214@gmail.com]
+
+[이정욱][https://github.com/kakao3450]
