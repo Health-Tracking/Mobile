@@ -194,35 +194,26 @@ export default function Medications() {
     </View>
   );
 
-  // // 테스트 데이터 추가
-  // useEffect(() => {
-  //   const testData = {
-  //     '2024-11-01': 1,  // 1회 복용
-  //     '2024-11-02': 2,  // 2회 복용
-  //     '2024-11-03': 3,  // 3회 복용
-  //     '2024-11-04': 4,  // 4회 복용
-  //     '2024-11-05': 5,  // 5회 복용
-  //     '2024-11-06': 1,  // 1회 복용
-  //     '2024-11-07': 2,  // 2회 복용
-  //     '2024-11-08': 3,  // 3회 복용
-  //     '2024-11-09': 4,  // 4회 복용
-  //     '2024-11-10': 5,  // 5회 복용
-  //   };
+  // 테스트 데이터 추가
+  useEffect(() => {
+    const testData = {
+      '2024-11-01': { selected: true, marked: true, selectedColor: getColorIntensity(1) },
+      '2024-11-02': { selected: true, marked: true, selectedColor: getColorIntensity(2) },
+      '2024-11-03': { selected: true, marked: true, selectedColor: getColorIntensity(3) },
+      '2024-11-04': { selected: true, marked: true, selectedColor: getColorIntensity(4) },
+      '2024-11-05': { selected: true, marked: true, selectedColor: getColorIntensity(5) },
+      '2024-11-06': { selected: true, marked: true, selectedColor: getColorIntensity(1) },
+      '2024-11-07': { selected: true, marked: true, selectedColor: getColorIntensity(2) },
+      '2024-11-08': { selected: true, marked: true, selectedColor: getColorIntensity(3) },
+      '2024-11-09': { selected: true, marked: true, selectedColor: getColorIntensity(4) },
+      '2024-11-10': { selected: true, marked: true, selectedColor: getColorIntensity(5) },
+      '2024-11-11': { selected: true, marked: true, selectedColor: getColorIntensity(1) },
+    };
 
-  //   // medicationCounts 설정
-  //   setMedicationCounts(testData);
+    console.log('마킹된 날짜:', testData);
+    setMedicationDates(testData);
+  }, []);
 
-  //   // medicationDates 설정
-  //   const markedDates = {};
-  //   Object.entries(testData).forEach(([date, count]) => {
-  //     markedDates[date] = {
-  //       selected: true,
-  //       selectedColor: getColorIntensity(count)
-  //     };
-  //   });
-  //   setMedicationDates(markedDates);
-  // }, []); // 컴포넌트 마운트 시 한 번만 실행
-  ////
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -248,8 +239,9 @@ export default function Medications() {
       <View style={styles.calendarContainer}>
         <Text style={styles.sectionTitle}>약 복용 기록</Text>
         <Calendar
-          current={new Date().toISOString()}
+          current={'2024-11-01'}
           markedDates={medicationDates}
+          markingType={'period'}
           theme={{
             backgroundColor: '#ffffff',
             calendarBackground: '#ffffff',
