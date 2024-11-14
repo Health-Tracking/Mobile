@@ -136,7 +136,7 @@ export default function Messages() {
       console.error('AI 메시지 전송 오류:', error);
 
       const errorMessage = {
-        content: "죄송합니다. 현재 서비스에 문제가 ��어 응답을 생성할 수 없습니다. 잠시 후 다시 시도해주세요.",
+        content: "죄송합니다. 현재 서비스에 문제가 생겨 응답을 생성할 수 없습니다. 잠시 후 다시 시도해주세요.",
         sender: 'AI',
         timestamp: new Date().toISOString(),
         read: true
@@ -316,39 +316,42 @@ export default function Messages() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#F8F9FA',
+    paddingTop: Platform.OS === 'ios' ? 50 : 20,
   },
   header: {
     backgroundColor: '#fff',
-    paddingVertical: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: '#E9ECEF',
+    marginBottom: 10,
   },
   tabContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingHorizontal: 20,
+    justifyContent: 'center',
+    gap: 15,
   },
   tab: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-    backgroundColor: '#f8f8f8',
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    backgroundColor: '#F8F9FA',
   },
   activeTab: {
-    backgroundColor: '#e6f2ff',
+    backgroundColor: '#E7F1FF',
   },
   tabText: {
     marginLeft: 8,
-    fontSize: 15,
-    color: '#666',
+    fontSize: 14,
+    color: '#6C757D',
     fontWeight: '500',
   },
   activeTabText: {
     color: '#4A90E2',
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
   keyboardAvoid: {
     flex: 1,
@@ -359,23 +362,29 @@ const styles = StyleSheet.create({
   },
   messageWrapper: {
     flexDirection: 'row',
-    marginVertical: 4,
-    alignItems: 'center',
+    marginVertical: 6,
+    alignItems: 'flex-start',
   },
   userMessageWrapper: {
     justifyContent: 'flex-end',
   },
   avatarContainer: {
     marginRight: 8,
-    alignSelf: 'center',
-    marginTop: 0,
-    marginBottom: 0,
+    marginTop: 4,
   },
   messageBubble: {
-    maxWidth: '70%',
+    maxWidth: '75%',
     padding: 12,
-    borderRadius: 20,
+    borderRadius: 18,
     backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
   userMessage: {
     backgroundColor: '#4A90E2',
@@ -387,18 +396,18 @@ const styles = StyleSheet.create({
   },
   messageText: {
     fontSize: 15,
-    lineHeight: 20,
+    lineHeight: 21,
   },
   userMessageText: {
     color: '#fff',
   },
   doctorMessageText: {
-    color: '#000',
+    color: '#212529',
   },
   timestampText: {
-    fontSize: 10,
+    fontSize: 11,
     marginTop: 4,
-    color: '#999',
+    color: '#ADB5BD',
   },
   userTimestamp: {
     color: 'rgba(255, 255, 255, 0.7)',
@@ -410,30 +419,40 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     flexDirection: 'row',
-    padding: 10,
-    // backgroundColor: 'white',
-    // borderTopWidth: 1,
-    // borderTopColor: '#ddd',
+    padding: 12,
+    backgroundColor: '#fff',
+    borderTopWidth: 1,
+    borderTopColor: '#E9ECEF',
   },
   input: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#F8F9FA',
     borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 8,
+    borderColor: '#E9ECEF',
+    borderRadius: 24,
+    paddingHorizontal: 18,
+    paddingVertical: 10,
     marginRight: 10,
+    fontSize: 15,
   },
   sendButton: {
     backgroundColor: '#4A90E2',
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 8,
+    borderRadius: 24,
+    paddingHorizontal: 18,
+    paddingVertical: 10,
     justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
   sendButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 15,
   },
 });

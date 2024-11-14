@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { usePatient } from '../contexts/PatientContext';
 
@@ -17,7 +17,7 @@ export default function Home() {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Icon name="person-circle-outline" size={80} color="#4A90E2" />
+        <Icon name="person-circle-outline" size={60} color="#4A90E2" />
         <Text style={styles.name}>{patientInfo.name}님</Text>
       </View>
 
@@ -29,13 +29,51 @@ export default function Home() {
         <InfoItem icon="water" label="혈액형" value={patientInfo.bloodType} />
       </View>
 
-      <View style={styles.goalContainer}>
-        <Text style={styles.goalTitle}>앱 사용 목표</Text>
-        <Text style={styles.goalText}>
-          이 앱은 귀하의 일상적인 건강 상태를 기록하고 관리하는 데 도움을 줍니다.
-          혈압, 산소 포화도, 혈당 등의 생체 정보를 정기적으로 기록하여
-          담당 의사의 진료에 유용한 정보를 제공할 수 있습니다.
-        </Text>
+      <View style={styles.summaryContainer}>
+        <Text style={styles.summaryTitle}>건강 관리 현황</Text>
+
+        <View style={styles.summarySection}>
+          <Text style={styles.sectionTitle}>생체 신호 측정</Text>
+          <View style={styles.summaryGrid}>
+            <SummaryItem
+              icon="heart"
+              label="혈압"
+              count={patientInfo.vitals?.find(v => v.title === "혈압")?.data ?
+                Object.keys(patientInfo.vitals.find(v => v.title === "혈압").data).length : 0}
+              total={7}
+            />
+            <SummaryItem
+              icon="pulse"
+              label="산소포화도"
+              count={patientInfo.vitals?.find(v => v.title === "산소 포화도")?.data ?
+                Object.keys(patientInfo.vitals.find(v => v.title === "산소 포화도").data).length : 0}
+              total={7}
+            />
+            <SummaryItem
+              icon="water"
+              label="혈당"
+              count={patientInfo.vitals?.find(v => v.title === "혈당")?.data ?
+                Object.keys(patientInfo.vitals.find(v => v.title === "혈당").data).length : 0}
+              total={7}
+            />
+          </View>
+        </View>
+
+        <View style={styles.summarySection}>
+          <Text style={styles.sectionTitle}>이번 주 약 복용</Text>
+          <View style={styles.medicationSummary}>
+            <Icon name="medical" size={24} color="#4A90E2" />
+            <View style={styles.medicationInfo}>
+              <Text style={styles.medicationText}>
+                {patientInfo.medications?.length || 0}개의 알림 설정됨
+              </Text>
+              <View style={styles.progressBar}>
+                <View style={[styles.progressFill, { width: `${(5 / 7) * 100}%` }]} />
+              </View>
+              <Text style={styles.progressText}>주간 복용률 71%</Text>
+            </View>
+          </View>
+        </View>
       </View>
     </ScrollView>
   );
@@ -49,6 +87,19 @@ function InfoItem({ icon, label, value }) {
         <Text style={styles.infoLabel}>{label}</Text>
         <Text style={styles.infoValue}>{value}</Text>
       </View>
+    </View>
+  );
+}
+
+function SummaryItem({ icon, label, count, total }) {
+  const percentage = Math.round((count / total) * 100);
+
+  return (
+    <View style={styles.summaryItem}>
+      <Icon name={icon} size={24} color="#4A90E2" />
+      <Text style={styles.summaryLabel}>{label}</Text>
+      <Text style={styles.summaryCount}>{count}/{total}회</Text>
+      <Text style={styles.summaryPercentage}>{percentage}%</Text>
     </View>
   );
 }
@@ -70,57 +121,124 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5F5F5',
+    paddingTop: Platform.OS === 'ios' ? 50 : 20,
   },
   header: {
     alignItems: 'center',
-    padding: 20,
+    padding: 5,
     backgroundColor: '#fff',
   },
   name: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 'bold',
-    marginTop: 10,
+    marginTop: 5,
   },
   infoContainer: {
     backgroundColor: '#fff',
-    marginTop: 20,
-    padding: 15,
+    marginTop: 10,
+    padding: 12,
     borderRadius: 10,
     marginHorizontal: 10,
   },
   infoItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 10,
   },
   infoTextContainer: {
-    marginLeft: 15,
+    marginLeft: 12,
   },
   infoLabel: {
-    fontSize: 16,
+    fontSize: 15,
     color: '#666',
   },
   infoValue: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: 'bold',
     color: '#333',
   },
-  goalContainer: {
+  summaryContainer: {
     backgroundColor: '#fff',
-    marginTop: 20,
-    padding: 15,
+    marginTop: 10,
+    padding: 12,
     borderRadius: 10,
     marginHorizontal: 10,
+    marginBottom: 15,
   },
-  goalTitle: {
+  summaryTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 12,
   },
-  goalText: {
+  summarySection: {
+    marginBottom: 15,
+  },
+  sectionTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    marginBottom: 8,
+    color: '#666',
+  },
+  summaryGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+  },
+  summaryItem: {
+    alignItems: 'center',
+    width: '31%',
+    backgroundColor: '#f8f9fa',
+    padding: 8,
+    borderRadius: 8,
+  },
+  summaryLabel: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 4,
+  },
+  summaryCount: {
     fontSize: 16,
-    lineHeight: 24,
+    fontWeight: 'bold',
     color: '#333',
+    marginTop: 4,
+  },
+  summaryPercentage: {
+    fontSize: 15,
+    color: '#4A90E2',
+    fontWeight: '600',
+    marginTop: 2,
+  },
+  medicationSummary: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f8f9fa',
+    padding: 12,
+    borderRadius: 8,
+  },
+  medicationInfo: {
+    flex: 1,
+    marginLeft: 12,
+  },
+  medicationText: {
+    fontSize: 15,
+    color: '#666',
+    marginBottom: 4,
+  },
+  progressBar: {
+    height: 5,
+    backgroundColor: '#e9ecef',
+    borderRadius: 3,
+    marginVertical: 4,
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: '#4A90E2',
+    borderRadius: 3,
+  },
+  progressText: {
+    fontSize: 15,
+    color: '#4A90E2',
+    fontWeight: '600',
   },
   ...additionalStyles,
 });

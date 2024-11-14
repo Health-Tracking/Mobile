@@ -48,7 +48,7 @@ export default function Medications() {
   // 색상 강도 계산 함수
   const getColorIntensity = (count) => {
     const colors = {
-      1: '#ebedf0',  // 1회 복용
+      1: '#c0e6c8',  // 1회 복용 (연한 초록색으로 변경)
       2: '#9be9a8',  // 2회 복용
       3: '#40c463',  // 3회 복용
       4: '#30a14e',  // 4회 복용
@@ -124,15 +124,30 @@ export default function Medications() {
     setDatePickerVisibility(false);
   };
 
-  const handleConfirm = async (date) => {
-    setSelectedDate(date);
+  const handleConfirm = async (time) => {
+    // 오늘 날짜와 선택된 시간을 결합
+    const today = new Date();
+    const selectedDateTime = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate(),
+      time.getHours(),
+      time.getMinutes()
+    );
+
+    // 선택된 시간이 현재 시간보다 이전이면 다음 날로 설정
+    if (selectedDateTime < today) {
+      selectedDateTime.setDate(selectedDateTime.getDate() + 1);
+    }
+
+    setSelectedDate(selectedDateTime);
     hideDatePicker();
 
-    const notificationId = await scheduleNotification(date);
+    const notificationId = await scheduleNotification(selectedDateTime);
 
     const newAlarm = {
       id: Date.now().toString(),
-      time: date,
+      time: selectedDateTime,
       active: true,
       notificationId: notificationId
     };
@@ -197,17 +212,20 @@ export default function Medications() {
   // 테스트 데이터 추가
   useEffect(() => {
     const testData = {
-      '2024-11-01': { selected: true, marked: true, selectedColor: getColorIntensity(1) },
-      '2024-11-02': { selected: true, marked: true, selectedColor: getColorIntensity(2) },
-      '2024-11-03': { selected: true, marked: true, selectedColor: getColorIntensity(3) },
-      '2024-11-04': { selected: true, marked: true, selectedColor: getColorIntensity(4) },
-      '2024-11-05': { selected: true, marked: true, selectedColor: getColorIntensity(5) },
-      '2024-11-06': { selected: true, marked: true, selectedColor: getColorIntensity(1) },
-      '2024-11-07': { selected: true, marked: true, selectedColor: getColorIntensity(2) },
-      '2024-11-08': { selected: true, marked: true, selectedColor: getColorIntensity(3) },
-      '2024-11-09': { selected: true, marked: true, selectedColor: getColorIntensity(4) },
-      '2024-11-10': { selected: true, marked: true, selectedColor: getColorIntensity(5) },
-      '2024-11-11': { selected: true, marked: true, selectedColor: getColorIntensity(1) },
+      '2024-11-01': { selected: true, selectedColor: getColorIntensity(1) },
+      '2024-11-02': { selected: true, selectedColor: getColorIntensity(2) },
+      '2024-11-03': { selected: true, selectedColor: getColorIntensity(3) },
+      '2024-11-04': { selected: true, selectedColor: getColorIntensity(4) },
+      '2024-11-05': { selected: true, selectedColor: getColorIntensity(5) },
+      '2024-11-06': { selected: true, selectedColor: getColorIntensity(1) },
+      '2024-11-07': { selected: true, selectedColor: getColorIntensity(2) },
+      '2024-11-08': { selected: true, selectedColor: getColorIntensity(3) },
+      '2024-11-09': { selected: true, selectedColor: getColorIntensity(4) },
+      '2024-11-10': { selected: true, selectedColor: getColorIntensity(5) },
+      '2024-11-11': { selected: true, selectedColor: getColorIntensity(2) },
+      '2024-11-12': { selected: true, selectedColor: getColorIntensity(2) },
+      '2024-11-13': { selected: true, selectedColor: getColorIntensity(3) },
+      '2024-11-14': { selected: true, selectedColor: getColorIntensity(4) }
     };
 
     console.log('마킹된 날짜:', testData);
@@ -217,58 +235,87 @@ export default function Medications() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerText}>약 복용 알림 설정</Text>
-        <TouchableOpacity style={styles.button} onPress={showDatePicker}>
-          <Text style={styles.buttonText}>날짜/시간 선택</Text>
-        </TouchableOpacity>
+        <Text style={styles.headerText}>약 복용 관리</Text>
+        <Text style={styles.headerSubText}>복용 시간을 설정하고 기록을 관리하세요</Text>
       </View>
 
-      <View style={styles.alarmsContainer}>
-        <Text style={styles.sectionTitle}>설정된 알람</Text>
-        <FlatList
-          data={alarms}
-          renderItem={renderAlarmItem}
-          keyExtractor={item => item.id}
-          style={styles.alarmsList}
-          ListEmptyComponent={
-            <Text style={styles.emptyText}>설정된 알람이 없습니다</Text>
-          }
-        />
-      </View>
+      <FlatList
+        style={styles.contentContainer}
+        data={[{ key: 'content' }]}
+        renderItem={() => (
+          <>
+            <View style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <Icon name="time-outline" size={20} color="#4A90E2" />
+                <Text style={styles.sectionTitle}>복용 알림 설정</Text>
+              </View>
 
-      <View style={styles.calendarContainer}>
-        <Text style={styles.sectionTitle}>약 복용 기록</Text>
-        <Calendar
-          current={'2024-11-01'}
-          markedDates={medicationDates}
-          markingType={'period'}
-          theme={{
-            backgroundColor: '#ffffff',
-            calendarBackground: '#ffffff',
-            textSectionTitleColor: '#000000',
-            selectedDayBackgroundColor: '#40c463',
-            selectedDayTextColor: '#ffffff',
-            todayTextColor: '#00adf5',
-            dayTextColor: '#2d4150',
-            textDisabledColor: '#d9e1e8',
-            dotColor: '#00adf5',
-            selectedDotColor: '#ffffff',
-            arrowColor: 'orange',
-            monthTextColor: 'blue',
-            indicatorColor: 'blue',
-            textDayFontWeight: '300',
-            textMonthFontWeight: 'bold',
-            textDayHeaderFontWeight: '300',
-            textDayFontSize: 16,
-            textMonthFontSize: 16,
-            textDayHeaderFontSize: 16
-          }}
-        />
-      </View>
+              <TouchableOpacity style={styles.addButton} onPress={showDatePicker}>
+                <Text style={styles.addButtonText}>+ 새 알림 추가</Text>
+              </TouchableOpacity>
+
+              {alarms.map(item => renderAlarmItem({ item }))}
+
+              {alarms.length === 0 && (
+                <View style={styles.emptyContainer}>
+                  <Icon name="notifications-off-outline" size={24} color="#999" />
+                  <Text style={styles.emptyText}>설정된 알림이 없습니다</Text>
+                </View>
+              )}
+            </View>
+
+            <View style={styles.section}>
+              <View style={styles.recordHeader}>
+                <View style={styles.sectionHeader}>
+                  <Icon name="calendar-outline" size={20} color="#4A90E2" />
+                  <Text style={styles.sectionTitle}>복용 기록</Text>
+                </View>
+
+                <View style={styles.legendContainer}>
+                  <View style={styles.legendItem}>
+                    <View style={[styles.legendDot, { backgroundColor: '#c0e6c8' }]} />
+                    <Text style={styles.legendText}>1회</Text>
+                  </View>
+                  <View style={styles.legendItem}>
+                    <View style={[styles.legendDot, { backgroundColor: '#40c463' }]} />
+                    <Text style={styles.legendText}>3회</Text>
+                  </View>
+                  <View style={styles.legendItem}>
+                    <View style={[styles.legendDot, { backgroundColor: '#216e39' }]} />
+                    <Text style={styles.legendText}>5회+</Text>
+                  </View>
+                </View>
+              </View>
+
+              <Calendar
+                current={new Date().toISOString()}
+                markedDates={medicationDates}
+                markingType={'dot'}
+                theme={{
+                  backgroundColor: '#ffffff',
+                  calendarBackground: '#ffffff',
+                  textSectionTitleColor: '#666',
+                  selectedDayBackgroundColor: '#4A90E2',
+                  selectedDayTextColor: '#ffffff',
+                  todayTextColor: '#4A90E2',
+                  dayTextColor: '#2d4150',
+                  textDisabledColor: '#d9e1e8',
+                  dotColor: '#4A90E2',
+                  arrowColor: '#4A90E2',
+                  monthTextColor: '#2d4150',
+                  textDayFontSize: 14,
+                  textMonthFontSize: 16,
+                  textDayHeaderFontSize: 14
+                }}
+              />
+            </View>
+          </>
+        )}
+      />
 
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
-        mode="datetime"
+        mode="time"
         onConfirm={handleConfirm}
         onCancel={hideDatePicker}
       />
@@ -279,87 +326,125 @@ export default function Medications() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#f5f5f5',
+    paddingTop: Platform.OS === 'ios' ? 50 : 20,
   },
   header: {
-    padding: 20,
     backgroundColor: '#4A90E2',
+    padding: 15,
+    borderRadius: 10,
+    margin: 15,
   },
   headerText: {
-    fontSize: 24,
+    fontSize: 20,
     color: 'white',
     fontWeight: 'bold',
   },
-  button: {
-    backgroundColor: '#2980b9',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 10,
+  headerSubText: {
+    fontSize: 12,
+    color: 'rgba(255, 255, 255, 0.8)',
+    marginTop: 3,
   },
-  buttonText: {
-    color: 'white',
-    textAlign: 'center',
-  },
-  dateText: {
-    color: 'white',
-    marginTop: 10,
-  },
-  calendarContainer: {
+  contentContainer: {
     flex: 1,
-    backgroundColor: 'white',
+    paddingHorizontal: 15,
   },
-  calendarHeader: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    padding: 10,
-    backgroundColor: '#f0f0f0',
-  },
-  alarmsContainer: {
+  section: {
     backgroundColor: 'white',
+    borderRadius: 10,
     padding: 15,
-    marginVertical: 10,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 0,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
+    fontSize: 14,
+    fontWeight: '600',
     color: '#333',
+    marginLeft: 6,
   },
-  alarmsList: {
-    maxHeight: 200,
+  addButton: {
+    backgroundColor: '#4A90E2',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginVertical: 15,
+  },
+  addButtonText: {
+    color: 'white',
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  legendContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    padding: 0,
+    marginLeft: 15,
+  },
+  legendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 12,
+  },
+  legendDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    marginRight: 6,
+  },
+  legendText: {
+    fontSize: 12,
+    color: '#666',
+    fontWeight: '500',
+  },
+  emptyContainer: {
+    alignItems: 'center',
+    padding: 25,
+    marginVertical: 10,
+  },
+  emptyText: {
+    fontSize: 14,
+    color: '#999',
+    marginTop: 8,
   },
   alarmItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  alarmToggle: {
-    padding: 5,
-  },
-  alarmActive: {
-    opacity: 1,
+    padding: 15,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 8,
+    marginBottom: 10,
   },
   alarmInfo: {
     flex: 1,
     marginLeft: 10,
   },
   alarmTime: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 17,
+    fontWeight: '600',
     color: '#333',
   },
   alarmDate: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#666',
+    marginTop: 3,
   },
   deleteButton: {
-    padding: 5,
+    padding: 8,
   },
-  emptyText: {
-    textAlign: 'center',
-    color: '#999',
-    padding: 20,
+  recordHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
   },
 });

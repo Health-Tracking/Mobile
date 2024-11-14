@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Modal, TextInput, Alert, ScrollView, ActivityIndicator, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Modal, TextInput, Alert, ScrollView, ActivityIndicator, RefreshControl, Platform } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { usePatient } from '../contexts/PatientContext';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
@@ -11,10 +11,20 @@ const chartConfig = {
     backgroundColor: '#ffffff',
     backgroundGradientFrom: '#ffffff',
     backgroundGradientTo: '#ffffff',
-    decimalPlaces: 2,
-    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+    decimalPlaces: 1,
+    color: (opacity = 1) => `rgba(74, 144, 226, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(51, 51, 51, ${opacity})`,
     style: {
         borderRadius: 16,
+    },
+    propsForLabels: {
+        fontSize: 10,
+        fontWeight: '500',
+    },
+    propsForBackgroundLines: {
+        strokeWidth: 1,
+        strokeDasharray: "",
+        stroke: "rgba(0,0,0,0.1)",
     },
 };
 
@@ -258,14 +268,24 @@ export default function VitalChart() {
                                 labels: vitalsData?.spo2.labels.length > 0 ? vitalsData.spo2.labels : ['데이터 없음'],
                                 datasets: [{
                                     data: vitalsData?.spo2.data.length > 0 ? vitalsData.spo2.data : [0],
-                                    color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`,
-                                    strokeWidth: 2,
+                                    color: (opacity = 1) => `rgba(235, 87, 87, ${opacity * 0.9})`,
+                                    strokeWidth: 3,
                                 }],
                             }}
                             width={screenWidth - 60}
-                            height={220}
-                            chartConfig={chartConfig}
+                            height={200}
+                            chartConfig={{
+                                ...chartConfig,
+                                formatYLabel: (value) => `${Math.round(value)}%`,
+                            }}
                             bezier
+                            withDots={true}
+                            withInnerLines={true}
+                            withOuterLines={true}
+                            withVerticalLabels={true}
+                            withHorizontalLabels={true}
+                            withVerticalLines={false}
+                            segments={5}
                         />
                     </TouchableOpacity>
 
@@ -287,43 +307,31 @@ export default function VitalChart() {
                                         data: vitalsData?.bloodPressure.systolic.length > 0
                                             ? vitalsData.bloodPressure.systolic
                                             : [0],
-                                        color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`,
-                                        strokeWidth: 2,
+                                        color: (opacity = 1) => `rgba(235, 87, 87, ${opacity * 0.9})`,
+                                        strokeWidth: 3,
                                     },
                                     {
                                         data: vitalsData?.bloodPressure.diastolic.length > 0
                                             ? vitalsData.bloodPressure.diastolic
                                             : [0],
-                                        color: (opacity = 1) => `rgba(0, 0, 255, ${opacity})`,
-                                        strokeWidth: 2,
+                                        color: (opacity = 1) => `rgba(74, 144, 226, ${opacity * 0.9})`,
+                                        strokeWidth: 3,
                                     }
                                 ],
                                 legend: ["수축기", "이완기"]
                             }}
                             width={screenWidth - 60}
-                            height={220}
+                            height={200}
                             chartConfig={{
                                 ...chartConfig,
-                                // 범례 스타일 추가
-                                propsForLabels: {
-                                    fontSize: 12,
-                                },
-                                // 그리드 라인 스타일
-                                propsForBackgroundLines: {
-                                    strokeDasharray: "", // 실선으로 변경
-                                },
-                                // y축 레이블 포맷
                                 formatYLabel: (value) => `${Math.round(value)}`,
                             }}
                             bezier
-                            // 범례 표시 설정
                             withDots={true}
                             withInnerLines={true}
                             withOuterLines={true}
-                            withVerticalLines={true}
-                            withHorizontalLines={true}
-                            withShadow={false}
-                            // 범례 위치 설정
+                            withVerticalLines={false}
+                            segments={5}
                             legendOffset={20}
                         />
                     </TouchableOpacity>
@@ -345,14 +353,22 @@ export default function VitalChart() {
                                     data: vitalsData?.bloodSugar.data.length > 0
                                         ? vitalsData.bloodSugar.data
                                         : [0],
-                                    color: (opacity = 1) => `rgba(0, 255, 0, ${opacity})`,
-                                    strokeWidth: 2,
+                                    color: (opacity = 1) => `rgba(45, 185, 95, ${opacity * 0.9})`,
+                                    strokeWidth: 3,
                                 }],
                             }}
                             width={screenWidth - 60}
-                            height={220}
-                            chartConfig={chartConfig}
+                            height={200}
+                            chartConfig={{
+                                ...chartConfig,
+                                formatYLabel: (value) => `${Math.round(value)}`,
+                            }}
                             bezier
+                            withDots={true}
+                            withInnerLines={true}
+                            withOuterLines={true}
+                            withVerticalLines={false}
+                            segments={5}
                         />
                     </TouchableOpacity>
                 </View>
@@ -372,19 +388,18 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#F5F5F5',
+        paddingTop: Platform.OS === 'ios' ? 50 : 20,
     },
     scrollContainer: {
-        flexGrow: 1,
+        padding: 15,
     },
     chartsWrapper: {
-        paddingVertical: 10,
+        gap: 20,
     },
     chartContainer: {
-        backgroundColor: '#FFFFFF',
-        borderRadius: 10,
-        padding: 20,
-        marginVertical: 10,
-        marginHorizontal: 20,
+        backgroundColor: 'white',
+        borderRadius: 15,
+        padding: 15,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
@@ -392,10 +407,11 @@ const styles = StyleSheet.create({
         elevation: 3,
     },
     title: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 10,
-        textAlign: 'center',
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#333',
+        marginBottom: 15,
+        paddingLeft: 5,
     },
     modalOverlay: {
         flex: 1,
@@ -443,5 +459,10 @@ const styles = StyleSheet.create({
         color: 'white',
         textAlign: 'center',
         fontWeight: 'bold',
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });
