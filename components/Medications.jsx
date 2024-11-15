@@ -185,7 +185,7 @@ export default function Medications() {
   };
 
   const renderAlarmItem = ({ item }) => (
-    <View style={styles.alarmItem}>
+    <View style={styles.alarmItem} key={item.id}> {/* 키 추가 */}
       <TouchableOpacity
         style={[styles.alarmToggle, item.active && styles.alarmActive]}
         onPress={() => toggleAlarm(item.id)}
@@ -254,8 +254,11 @@ export default function Medications() {
                 <Text style={styles.addButtonText}>+ 새 알림 추가</Text>
               </TouchableOpacity>
 
-              {alarms.map(item => renderAlarmItem({ item }))}
-
+              {alarms.map(item => (
+                <React.Fragment key={item.id}>
+                  {renderAlarmItem({ item })}
+                </React.Fragment>
+              ))} {/* 키 추가 */}
               {alarms.length === 0 && (
                 <View style={styles.emptyContainer}>
                   <Icon name="notifications-off-outline" size={24} color="#999" />
