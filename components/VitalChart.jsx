@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Modal, TextInput, Alert, ScrollView, ActivityIndicator, RefreshControl, Platform } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Modal, TextInput, Alert, ScrollView, ActivityIndicator, RefreshControl } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { usePatient } from '../contexts/PatientContext';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
@@ -268,8 +268,8 @@ export default function VitalChart() {
                                 labels: vitalsData?.spo2.labels.length > 0 ? vitalsData.spo2.labels : ['데이터 없음'],
                                 datasets: [{
                                     data: vitalsData?.spo2.data.length > 0 ? vitalsData.spo2.data : [0],
-                                    color: (opacity = 1) => `rgba(235, 87, 87, ${opacity * 0.9})`,
-                                    strokeWidth: 3,
+                                    color: (opacity = 1) => `rgba(235, 87, 87, ${opacity})`,
+                                    strokeWidth: 2,
                                 }],
                             }}
                             width={screenWidth - 60}
@@ -307,15 +307,15 @@ export default function VitalChart() {
                                         data: vitalsData?.bloodPressure.systolic.length > 0
                                             ? vitalsData.bloodPressure.systolic
                                             : [0],
-                                        color: (opacity = 1) => `rgba(235, 87, 87, ${opacity * 0.9})`,
-                                        strokeWidth: 3,
+                                        color: (opacity = 1) => `rgba(235, 87, 87, ${opacity})`,
+                                        strokeWidth: 2,
                                     },
                                     {
                                         data: vitalsData?.bloodPressure.diastolic.length > 0
                                             ? vitalsData.bloodPressure.diastolic
                                             : [0],
-                                        color: (opacity = 1) => `rgba(74, 144, 226, ${opacity * 0.9})`,
-                                        strokeWidth: 3,
+                                        color: (opacity = 1) => `rgba(74, 144, 226, ${opacity})`,
+                                        strokeWidth: 2,
                                     }
                                 ],
                                 legend: ["수축기", "이완기"]
@@ -353,8 +353,8 @@ export default function VitalChart() {
                                     data: vitalsData?.bloodSugar.data.length > 0
                                         ? vitalsData.bloodSugar.data
                                         : [0],
-                                    color: (opacity = 1) => `rgba(45, 185, 95, ${opacity * 0.9})`,
-                                    strokeWidth: 3,
+                                    color: (opacity = 1) => `rgba(45, 185, 95, ${opacity})`,
+                                    strokeWidth: 2,
                                 }],
                             }}
                             width={screenWidth - 60}
@@ -387,8 +387,7 @@ export default function VitalChart() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F5F5F5',
-        paddingTop: Platform.OS === 'ios' ? 50 : 20,
+        backgroundColor: '#f5f5f5',
     },
     scrollContainer: {
         padding: 15,
